@@ -17,7 +17,7 @@ return new class extends Migration
             $table->increments('id');
             $table->string('name',200);
             $table->string('author',100);
-            $table->string('publishing_year');
+            $table->integer('publishing_year');
             $table->string('cate_id');
             $table->timestamps();
 
