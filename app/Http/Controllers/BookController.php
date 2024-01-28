@@ -18,8 +18,8 @@ class BookController extends Controller
      */
     public function index()
     {
+        //Gọi ra tất cả sách có trong dữ liệu
         $data = Books::all();
-
         return response()->json($data);
     }
 
@@ -30,85 +30,58 @@ class BookController extends Controller
      */
     public function create(Request $request)
     {
+        //Kiểm tra vai trò
+        if ($request->user()->role != 'admin') {
+            return response()->json(['message' => "Bạn không có quyền vào đây! Vui lòng không truy cập lung tung, xin cảm ơn !"]);
+        }
 
+        //Kiển tra dữ liệu đầu vào
+        $this->validate($request, [
+            'name' => 'required|string|regex:/^[a-zA-ZáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệóòỏõọôốồổỗộơớờởỡợíìỉĩịúùủũụưứừửữựýỳỷỹỵđĐ\s]+$/',
+            'author' => 'required|string|regex:/^[a-zA-ZáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệóòỏõọôốồổỗộơớờởỡợíìỉĩịúùủũụưứừửữựýỳỷỹỵđĐ\s]+$/',
+            'publishing_year' => 'required|numeric',
+            'cate_id' => 'required|string|regex:/^[a-zA-ZáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệóòỏõọôốồổỗộơớờởỡợíìỉĩịúùủũụưứừửữựýỳỷỹỵđĐ\s]+$/',
+        ]);
 
-        if (Auth::user()->role == 'admin') {
-            $rules = [
-                'name' => 'required|string|regex:/^[a-zA-ZáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệóòỏõọôốồổỗộơớờởỡợíìỉĩịúùủũụưứừửữựýỳỷỹỵđĐ\s]+$/',
-                'author' => 'required|string|regex:/^[a-zA-ZáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệóòỏõọôốồổỗộơớờởỡợíìỉĩịúùủũụưứừửữựýỳỷỹỵđĐ\s]+$/',
-                'publishing_year' => 'required|numeric',
-                'cate_id' => 'required|string|regex:/^[a-zA-ZáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệóòỏõọôốồổỗộơớờởỡợíìỉĩịúùủũụưứừửữựýỳỷỹỵđĐ\s]+$/',
-            ];
-
-            // Tạo một instance của Validator
-            $validator = Validator::make($request->all(), $rules);
-
-            // Kiểm tra xem validation có pass hay không
-            if ($validator->fails()) {
-                return response()->json(['error' => $validator->errors()], 400);
-            } else {
-
-                try {
-
-                    $data = Books::create([
-                        'name' =>  $request->input('name'),
-                        'author' =>  $request->input('author'),
-                        'publishing_year' => $request->input('publishing_year'),
-                        'cate_id' =>   $request->input('cate_id')
-
-
-                    ]);
-
-                    return response()->json($data);
-                } catch (\Throwable $th) {
-                    return
-                        response()->json(['error' => 'Lỗi: ' . $th, 500]);
-                }
-            }
-        } else {
-            return response()->json(['message' => "Bạn ko có quyền vào đây ! Vui lòng không truy cập lung tung, xin cảm ơn !"]);
+        //Tạo mới dữ liệu
+        try {
+            $data = Books::create($request->all());
+            return response()->json([
+                'input' => $data,
+                'message' => 'Thêm thành công!'
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => 'Lỗi: ' . $th, 500]);
         }
     }
 
 
     public function update(Request $request, $id)
     {
+        //kiểm tra vai trò
+        if ($request->user()->role !== 'admin') {
+            return response()->json(['message' => "Bạn không có quyền vào đây! Vui lòng không truy cập lung tung, xin cảm ơn!"]);
+        }
 
-        if (Auth::user()->role == 'admin') {
+        //kiểm tra dữ liệu đầu vào
+        $this->validate($request, [
+            'name' => 'required|string|regex:/^[a-zA-ZáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệóòỏõọôốồổỗộơớờởỡợíìỉĩịúùủũụưứừửữựýỳỷỹỵđĐ\s]+$/',
+            'author' => 'required|string|regex:/^[a-zA-ZáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệóòỏõọôốồổỗộơớờởỡợíìỉĩịúùủũụưứừửữựýỳỷỹỵđĐ\s]+$/',
+            'publishing_year' => 'required|numeric',
+            'cate_id' => 'required|string|regex:/^[a-zA-ZáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệóòỏõọôốồổỗộơớờởỡợíìỉĩịúùủũụưứừửữựýỳỷỹỵđĐ\s]+$/',
+        ]);
 
-            $rules = [
-                'name' => 'required|string|regex:/^[a-zA-ZáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệóòỏõọôốồổỗộơớờởỡợỞíìỉĩịúùủũụưứừửữựýỳỷỹỵđĐ\s]+$/',
-                'author' => 'required|string|regex:/^[a-zA-ZáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệóòỏõọôốồổỗộơớờởỡợỞíìỉĩịúùủũụưứừửữựýỳỷỹỵđĐ\s]+$/',
-                'publishing_year' => 'required|numeric',
-                'cate_id' => 'required|string|regex:/^[a-zA-ZáàảãạăắằẳẵặâấầẩẫậéèẻẽẹêếềểễệóòỏõọôốồổỗộơớờởỡợỞíìỉĩịúùủũụưứừửữựýỳỷỹỵđĐ\s]+$/',
-            ];
+        //Cập nhật dữ liệu
+        try {
+            $data = Books::find($id);
+            $data->update($request->only(['name', 'author', 'publishing_year', 'cate_id']));
 
-            // Tạo một instance của Validator
-            $validator = Validator::make($request->all(), $rules);
-
-            // Kiểm tra xem validation có pass hay không
-            if ($validator->fails()) {
-                return response()->json(['error' => $validator->errors()], 400);
-            } else {
-
-                try {
-
-                    $data = Books::find($id);
-                    $data->name = $request->input('name');
-                    $data->author = $request->input('author');
-                    $data->publishing_year = $request->input('publishing_year');
-                    $data->cate_id = $request->input('cate_id');
-
-
-                    $data->save();
-                    return response()->json($data, 200);
-                } catch (\Throwable $th) {
-                    return
-                        response()->json(['message' => 'Lỗi: ' . $th, 400]);
-                }
-            }
-        } else {
-            return response()->json(['message' => "Bạn ko có quyền vào đây ! Vui lòng không truy cập lung tung, xin cảm ơn !"]);
+            return response()->json([
+                'input' => $data, 
+                'message: ' => 'cập nhật thành công !'
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json(['error' => 'Lỗi: ' . $th, 400]);
         }
     }
 
@@ -116,11 +89,24 @@ class BookController extends Controller
     {
         $keyword = $request->input('keyword');
 
-        $results = Books::where('name', 'LIKE', "%{$keyword}%")
-            ->orWhere('author', 'like', "%{$keyword}%")
-            ->orWhere('cate_id', 'like', "%{$keyword}%")
-            ->get();
-        return response()->json($results);
+         //$results để tìm kết quả từ db  
+        $results = Books::where(function ($query) use ($keyword) {
+            $query->where('name', 'LIKE', "%{$keyword}%")
+                ->orWhere('author', 'LIKE', "%{$keyword}%")
+                ->orWhere('cate_id', 'LIKE', "%{$keyword}%");
+        })->get();
+
+        //Kiểm tra $results có tồn tại dữ liệu hay không bằng isEmpty()
+        if ($results->isEmpty()) {
+            return response()->json([
+                'input: ' => 'Keyword: ' . $keyword, 
+                'output: ' => 'từ khóa bạn tìm không tồn tại'
+            ], 404);
+        }
+        return response()->json([
+            'input: ' => 'Keyword: ' . $keyword, 
+            'output: ' => $results
+        ], 200);
     }
 
     /**
@@ -131,23 +117,26 @@ class BookController extends Controller
      */
     public function delete($id)
     {
-
-        if (Auth::user()->role == 'admin') {
-            $data = Books::find($id);
-
-            if (!$data) {
-                return response()->json(['message' => "ID bạn muốn xóa không tồn tại"], 401);
-            } else {
-                $data->delete();
-                return response()->json(
-                    [
-                        'message' => 'Xóa thành công'
-                    ],
-                    200
-                );
-            }
-        } else {
-            return response()->json(['message' => "Bạn ko có quyền vào đây ! Vui lòng không truy cập lung tung, xin cảm ơn !"], 500);
+        $user = Auth::user();
+        if ($user->role != 'admin') {
+            return response()->json([
+                'message' => "Bạn không có quyền vào đây! Vui lòng không truy cập lung tung, xin cảm ơn !"
+            ],200);
         }
+
+        $data = Books::find($id);
+
+        if (!$data) {
+            return response()->json([
+                'input' => 'ID bạn muốn xóa: ' . $id,
+                'message' => 'ID bạn muốn xóa không tồn tại'
+            ],404);
+        }
+        
+        $data->delete();
+        return response()->json([
+            'input' => 'ID bạn muốn xóa: '.$id,
+            'output' => 'Xóa thành công!',
+        ], 200);
     }
 }
