@@ -31,11 +31,9 @@ $router->group(['prefix'=>'admin','middleware' => 'auth:api'], function ($router
     $router->delete('/book/delete/{id}', 'BookController@delete');
 });
 
- 
+$router->post('/login', 'LoginController@login');
+$router->post('/register', 'LoginController@register');
+$router->get('/me', 'LoginController@me');
 
 $router->get('/book', 'BookController@index');
  
-$router->get('/category', 'CategoryController@index');
-$router->post('/category/create', 'CategoryController@create');
-$router->put('/category/update/{id}', 'CategoryController@update');
-$router->delete('/category/delete/{id}', 'CategoryController@delete');
