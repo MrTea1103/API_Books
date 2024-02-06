@@ -8,6 +8,9 @@
         "php": "^8.0",
         "firebase/php-jwt": "^6.10",
         "flipbox/lumen-generator": "^9.2",
+        "illuminate/hashing": "^9.52",
+        "illuminate/mail": "^9.52",
+        "illuminate/support": "^9.52",
         "laravel/lumen-framework": "^9.0",
         "tymon/jwt-auth": "*"
     },

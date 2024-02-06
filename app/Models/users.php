@@ -24,7 +24,7 @@ class users extends Model implements AuthenticatableContract, AuthorizableContra
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token', 'role'
     ];
     /**
      * Get the identifier that will be stored in the subject claim of the JWT.

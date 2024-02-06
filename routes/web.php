@@ -20,9 +20,7 @@ use Illuminate\Support\Facades\Auth;
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
-
- 
-
+// Xác thực user có trong hệ thống
 $router->group(['prefix'=>'admin','middleware' => 'auth:api'], function ($router) {
     $router->get('/book', 'BookController@index');
     $router->post('/book/create', 'BookController@create');
@@ -30,10 +28,15 @@ $router->group(['prefix'=>'admin','middleware' => 'auth:api'], function ($router
     $router->get('/book/search', 'BookController@search');
     $router->delete('/book/delete/{id}', 'BookController@delete');
 });
-
+// Đăng nhập
 $router->post('/login', 'LoginController@login');
 $router->post('/register', 'LoginController@register');
+$router->post('/password/reset/request', 'ResetPassword@sendResetLink');
+$router->post('/password/reset', 'ResetPassword@resetPassword');
+
 $router->get('/me', 'LoginController@me');
+$router->post('password/email', 'PasswordResetController@sendResetLinkEmail');
+$router->post('password/reset', 'PasswordResetController@reset');
 
 $router->get('/book', 'BookController@index');
  

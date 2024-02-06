@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\users;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth; 
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Hash;
+
 
 class LoginController extends Controller
 {
@@ -127,4 +128,5 @@ class LoginController extends Controller
             'expires_in'   => $expiresIn
         ]);
     }
+    
 }
