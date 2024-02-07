@@ -17,11 +17,17 @@ class BookController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //Gọi ra tất cả sách có trong dữ liệu
-        $data = Books::all();
-        return response()->json($data);
+
+        $sortField = $request->input('sort_field', 'title');
+        $sortDirection = $request->input('sort_direction', 'asc');
+
+        $query = Books::orderBy($sortField, $sortDirection);
+
+        $books = $query->paginate(5);
+
+        return response()->json($books);
     }
 
     /**

@@ -30,13 +30,16 @@ $router->group(['prefix'=>'admin','middleware' => 'auth:api'], function ($router
 });
 // Đăng nhập
 $router->post('/login', 'LoginController@login');
+// Đăng ký
 $router->post('/register', 'LoginController@register');
-$router->post('/password/reset/request', 'ResetPassword@sendResetLink');
-$router->post('/password/reset', 'ResetPassword@resetPassword');
-
-$router->get('/me', 'LoginController@me');
+// Quên mật khẩu
 $router->post('password/email', 'PasswordResetController@sendResetLinkEmail');
+// Đặt lại mật khẩu
 $router->post('password/reset', 'PasswordResetController@reset');
+// xem thông tin tài khoản
+$router->get('/me', 'LoginController@me');
 
+
+// Xem thông tin sách
 $router->get('/book', 'BookController@index');
  

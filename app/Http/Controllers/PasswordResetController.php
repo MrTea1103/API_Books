@@ -17,7 +17,10 @@ class PasswordResetController extends Controller
     public function sendResetLinkEmail(Request $request)
     {
 
-
+        $this->validate($request, [
+            'email' => 'required|string|regex:/^[a-zA-Z@.]+$/',
+            
+        ]);
         // Check if user exists
         if (!users::where('email', $request->email)->exists()) {
             return response()->json(['message' => 'User not found'], 404);
@@ -42,6 +45,10 @@ class PasswordResetController extends Controller
     public function reset(Request $request)
     {
 
+        $this->validate($request, [
+            'email' => 'required|string|regex:/^[a-zA-Z@.]+$/',
+
+        ]);
         // Find the user by email
         $user = users::where('email', $request->email)->first();
         if (!$user) {

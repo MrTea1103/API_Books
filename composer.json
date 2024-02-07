@@ -10,6 +10,7 @@
         "flipbox/lumen-generator": "^9.2",
         "illuminate/hashing": "^9.52",
         "illuminate/mail": "^9.52",
+        "illuminate/pagination": "^9.52",
         "illuminate/support": "^9.52",
         "laravel/lumen-framework": "^9.0",
         "tymon/jwt-auth": "*"
